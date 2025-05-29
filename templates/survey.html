@@ -3,70 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lifestyle Preferences Survey</title>
+    <title>Fill Out Survey</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Lifestyle Preferences Survey</h1>
-        <p>Help us understand lifestyle choices by filling out this short survey. Your responses are anonymous.</p>
-        <form action="{{ url_for('submit_survey') }}" method="POST">
-            <div class="form-group">
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" min="10" max="120">
-            </div>
+    <div class="survey-container">
+        <header class="survey-header">
+            <div class="logo">_Surveys</div>
+            <nav class="survey-nav">
+                <a href="{{ url_for('survey_form') }}" class="active">FILL OUT SURVEY</a>
+                <a href="{{ url_for('view_survey_results') }}">VIEW SURVEY RESULTS</a>
+            </nav>
+        </header>
 
-            <div class="form-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="" disabled selected>Select your gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Non-binary">Non-binary</option>
-                    <option value="Other">Other</option>
-                    <option value="Prefer not to say">Prefer not to say</option>
-                </select>
-            </div>
+        <form action="{{ url_for('submit_survey') }}" method="POST" class="survey-form">
+            <fieldset class="personal-details">
+                <legend>Personal Details :</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_names">Full Names</label>
+                        <input type="text" id="full_names" name="full_names" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contact_number">Contact Number</label>
+                        <input type="tel" id="contact_number" name="contact_number" required>
+                    </div>
+                </div>
+            </fieldset>
 
-            <div class="form-group">
-                <label for="preferred_activity">What's your preferred leisure activity?</label>
-                <select id="preferred_activity" name="preferred_activity" required>
-                    <option value="" disabled selected>Select an activity</option>
-                    <option value="Reading">Reading</option>
-                    <option value="Sports">Sports (Playing/Watching)</option>
-                    <option value="Movies/TV Shows">Movies/TV Shows</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Socializing">Socializing with Friends/Family</option>
-                    <option value="Arts & Crafts">Arts & Crafts</option>
-                    <option value="Outdoor Activities">Outdoor Activities (Hiking, Biking)</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
+            <fieldset class="favorite-food">
+                <legend>What is your favorite food?</legend>
+                <div class="checkbox-group">
+                    <span><input type="checkbox" id="food_pizza" name="food_pizza" value="1"> <label for="food_pizza">Pizza</label></span>
+                    <span><input type="checkbox" id="food_pasta" name="food_pasta" value="1"> <label for="food_pasta">Pasta</label></span>
+                    <span><input type="checkbox" id="food_pap_wors" name="food_pap_wors" value="1"> <label for="food_pap_wors">Pap and Wors</label></span>
+                    <span>
+                        <input type="checkbox" id="food_other_checkbox" name="food_other_checkbox" value="1"> <label for="food_other_checkbox">Other</label>
+                        <input type="text" id="food_other_text" name="food_other_text" placeholder="Specify other food" style="margin-left: 5px; display: inline-block; width: auto;">
+                    </span>
+                </div>
+            </fieldset>
 
-            <div class="form-group">
-                <label>What kind of environment do you prefer to live in?</label>
-                <div><input type="radio" id="urban" name="preferred_environment" value="Urban" required> <label for="urban">Urban (City)</label></div>
-                <div><input type="radio" id="suburban" name="preferred_environment" value="Suburban"> <label for="suburban">Suburban</label></div>
-                <div><input type="radio" id="rural" name="preferred_environment" value="Rural"> <label for="rural">Rural (Countryside)</label></div>
-            </div>
+            <fieldset class="agreement-scale">
+                <legend>Please rate your level of agreement on a scale from 1 to 5, with 1 being "strongly agree" and 5 being "strongly disagree."</legend>
+                <table class="likert-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Strongly Agree (1)</th>
+                            <th>Agree (2)</th>
+                            <th>Neutral (3)</th>
+                            <th>Disagree (4)</th>
+                            <th>Strongly Disagree (5)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>I like to watch movies</td>
+                            <td><input type="radio" name="movies_rating" value="1" required></td>
+                            <td><input type="radio" name="movies_rating" value="2"></td>
+                            <td><input type="radio" name="movies_rating" value="3"></td>
+                            <td><input type="radio" name="movies_rating" value="4"></td>
+                            <td><input type="radio" name="movies_rating" value="5"></td>
+                        </tr>
+                        <tr>
+                            <td>I like to listen to radio</td>
+                            <td><input type="radio" name="radio_rating" value="1" required></td>
+                            <td><input type="radio" name="radio_rating" value="2"></td>
+                            <td><input type="radio" name="radio_rating" value="3"></td>
+                            <td><input type="radio" name="radio_rating" value="4"></td>
+                            <td><input type="radio" name="radio_rating" value="5"></td>
+                        </tr>
+                        <tr>
+                            <td>I like to eat out</td>
+                            <td><input type="radio" name="eat_out_rating" value="1" required></td>
+                            <td><input type="radio" name="eat_out_rating" value="2"></td>
+                            <td><input type="radio" name="eat_out_rating" value="3"></td>
+                            <td><input type="radio" name="eat_out_rating" value="4"></td>
+                            <td><input type="radio" name="eat_out_rating" value="5"></td>
+                        </tr>
+                        <tr>
+                            <td>I like to watch TV</td>
+                            <td><input type="radio" name="tv_rating" value="1" required></td>
+                            <td><input type="radio" name="tv_rating" value="2"></td>
+                            <td><input type="radio" name="tv_rating" value="3"></td>
+                            <td><input type="radio" name="tv_rating" value="4"></td>
+                            <td><input type="radio" name="tv_rating" value="5"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
 
-            <div class="form-group">
-                <label>How would you describe your social preference?</label>
-                <div><input type="radio" id="introvert" name="social_preference" value="Introvert" required> <label for="introvert">Introvert</label></div>
-                <div><input type="radio" id="extrovert" name="social_preference" value="Extrovert"> <label for="extrovert">Extrovert</label></div>
-                <div><input type="radio" id="ambivert" name="social_preference" value="Ambivert"> <label for="ambivert">Ambivert</label></div>
+            <div class="submit-button-container">
+                <button type="submit" class="submit-btn">SUBMIT</button>
             </div>
-            
-            <div class="form-group">
-                <label>How would you rate your daily technology usage (screens, gadgets)?</label>
-                <div><input type="radio" id="low_tech" name="tech_usage" value="Low" required> <label for="low_tech">Low (Minimal)</label></div>
-                <div><input type="radio" id="medium_tech" name="tech_usage" value="Medium"> <label for="medium_tech">Medium (Moderate)</label></div>
-                <div><input type="radio" id="high_tech" name="tech_usage" value="High"> <label for="high_tech">High (Extensive)</label></div>
-            </div>
-
-            <button type="submit">Submit Response</button>
         </form>
     </div>
+    <script>
+        // Optional: Enable/disable 'Other' text input based on checkbox
+        const otherCheckbox = document.getElementById('food_other_checkbox');
+        const otherTextInput = document.getElementById('food_other_text');
+        otherTextInput.disabled = true; // Initially disabled
+
+        otherCheckbox.addEventListener('change', function() {
+            otherTextInput.disabled = !this.checked;
+            if (!this.checked) {
+                otherTextInput.value = ''; // Clear text if unchecked
+            } else {
+                otherTextInput.focus();
+            }
+        });
+    </script>
 </body>
 </html>

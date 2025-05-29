@@ -6,17 +6,24 @@
     <title>Thank You!</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
-        /* Additional style for thank you page centering */
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-        .container { max-width: 500px; }
+        .thank-you-content { text-align: center; padding-top: 50px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Thank You!</h1>
-        <p>Your response has been recorded.</p>
-        <p><a href="{{ url_for('survey_form') }}">Submit another response</a></p>
-        <p><a href="{{ url_for('analysis') }}">View Analysis (Admin)</a></p>
+    <div class="survey-container"> <!-- Re-use survey-container -->
+        <header class="survey-header">
+            <div class="logo">_Surveys</div>
+            <nav class="survey-nav">
+                <a href="{{ url_for('survey_form') }}">FILL OUT SURVEY</a>
+                <a href="{{ url_for('view_survey_results') }}">VIEW SURVEY RESULTS</a>
+            </nav>
+        </header>
+        <div class="thank-you-content">
+            <h1>Thank You!</h1>
+            <p>Your response has been recorded.</p>
+            <p><a href="{{ url_for('survey_form') }}">Submit another response</a></p>
+            <p><a href="{{ url_for('view_survey_results') }}">View Survey Results</a></p>
+        </div>
     </div>
 </body>
 </html>

@@ -3,73 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Survey Analysis</title>
+    <title>Survey Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Survey Analysis</h1>
-        <p><a href="{{ url_for('survey_form') }}">Back to Survey</a></p>
+    <div class="survey-container"> <!-- Re-use survey-container for consistent look -->
+        <header class="survey-header">
+            <div class="logo">_Surveys</div>
+            <nav class="survey-nav">
+                <a href="{{ url_for('survey_form') }}">FILL OUT SURVEY</a>
+                <a href="{{ url_for('view_survey_results') }}" class="active">VIEW SURVEY RESULTS</a>
+            </nav>
+        </header>
 
-        <h2>Overview</h2>
-        <p><strong>Total Responses:</strong> {{ total_responses }}</p>
-        <p><strong>Average Age of Respondents:</strong> {{ avg_age if avg_age != "N/A" else "Not enough data" }}</p>
+        <div class="analysis-content" style="padding-top: 20px;">
+            <h1>Survey Results Analysis</h1>
 
-        <h2>Gender Distribution</h2>
-        {% if gender_distribution %}
-        <ul>
-            {% for item in gender_distribution %}
-            <li>{{ item.gender }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No data available for gender distribution.</p>
-        {% endif %}
+            <h2>Overall Statistics</h2>
+            <p><strong>Total Number of Surveys Filled Out:</strong> {{ total_responses }}</p>
+            <p><strong>Number of People who Filled Out the Survey (Unique Emails):</strong> {{ unique_respondents }}</p>
+            <p><strong>Number of Respondents who provided Date of Birth:</strong> {{ dob_entries }}</p>
+            <p><strong>Approximate Number of Adults (born before 2006 - placeholder):</strong> {{ adults_approx }}</p>
 
-        <h2>Most Popular Activities (Top 5)</h2>
-        {% if popular_activities %}
-        <ul>
-            {% for activity in popular_activities %}
-            <li>{{ activity.preferred_activity }}: {{ activity.count }}</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No data available for popular activities.</p>
-        {% endif %}
 
-        <h2>Preferred Environment Distribution</h2>
-        {% if environment_distribution %}
-        <ul>
-            {% for item in environment_distribution %}
-            <li>{{ item.preferred_environment }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No data available for environment preferences.</p>
-        {% endif %}
-        
-        <h2>Social Preference Distribution</h2>
-        {% if social_preference_distribution %}
-        <ul>
-            {% for item in social_preference_distribution %}
-            <li>{{ item.social_preference }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No data available for social preferences.</p>
-        {% endif %}
+            <h2>Favorite Food Preferences</h2>
+            {% if food_counts and total_responses > 0 %}
+                <p>Percentage of people who like Pizza: {{ "%.1f"|format((food_counts.pizza_count / total_responses) * 100 if food_counts.pizza_count else 0) }}% ({{ food_counts.pizza_count or 0 }})</p>
+                <p>Percentage of people who like Pasta: {{ "%.1f"|format((food_counts.pasta_count / total_responses) * 100 if food_counts.pasta_count else 0) }}% ({{ food_counts.pasta_count or 0 }})</p>
+                <p>Percentage of people who like Pap and Wors: {{ "%.1f"|format((food_counts.pap_wors_count / total_responses) * 100 if food_counts.pap_wors_count else 0) }}% ({{ food_counts.pap_wors_count or 0 }})</p>
+                <p>Percentage of people who specified 'Other' food: {{ "%.1f"|format((food_counts.other_count / total_responses) * 100 if food_counts.other_count else 0) }}% ({{ food_counts.other_count or 0 }})</p>
+                {% if food_counts.other_texts %}
+                    <p><strong>'Other' food responses:</strong> {{ food_counts.other_texts }}</p>
+                {% endif %}
+            {% else %}
+                <p>No data available for favorite foods yet.</p>
+            {% endif %}
 
-        <h2>Technology Usage Distribution</h2>
-        {% if tech_usage_distribution %}
-        <ul>
-            {% for item in tech_usage_distribution %}
-            <li>{{ item.tech_usage }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No data available for technology usage.</p>
-        {% endif %}
-
+            <h2>Average Agreement Ratings (1=Strongly Agree, 5=Strongly Disagree)</h2>
+            {% if avg_ratings and total_responses > 0 %}
+                <p>Average rating for "I like to watch movies": {{ "%.2f"|format(avg_ratings.avg_movies) if avg_ratings.avg_movies is not none else "N/A" }}</p>
+                <p>Average rating for "I like to listen to radio": {{ "%.2f"|format(avg_ratings.avg_radio) if avg_ratings.avg_radio is not none else "N/A" }}</p>
+                <p>Average rating for "I like to eat out": {{ "%.2f"|format(avg_ratings.avg_eat_out) if avg_ratings.avg_eat_out is not none else "N/A" }}</p>
+                <p>Average rating for "I like to watch TV": {{ "%.2f"|format(avg_ratings.avg_tv) if avg_ratings.avg_tv is not none else "N/A" }}</p>
+            {% else %}
+                <p>No rating data available yet.</p>
+            {% endif %}
+            <br>
+             <p style="text-align: center;"><a href="{{ url_for('survey_form') }}">Back to Survey Form</a></p>
+        </div>
     </div>
 </body>
 </html>

@@ -18,103 +18,121 @@ def survey_form():
 def submit_survey():
     if request.method == 'POST':
         try:
-            age = request.form.get('age', type=int) # Use .get for safety, add type
-            gender = request.form['gender']
-            preferred_activity = request.form['preferred_activity']
-            preferred_environment = request.form['preferred_environment']
-            social_preference = request.form['social_preference']
-            tech_usage = request.form['tech_usage']
+            # Personal Details
+            full_names = request.form.get('full_names')
+            email = request.form.get('email')
+            dob = request.form.get('dob')
+            contact_number = request.form.get('contact_number')
+
+            # Favorite Food
+            food_pizza = 1 if request.form.get('food_pizza') else 0
+            food_pasta = 1 if request.form.get('food_pasta') else 0
+            food_pap_wors = 1 if request.form.get('food_pap_wors') else 0
+            food_other_checkbox = 1 if request.form.get('food_other_checkbox') else 0
+            food_other_text = request.form.get('food_other_text') if food_other_checkbox else None
+
+            # Likert Scale
+            movies_rating = request.form.get('movies_rating', type=int)
+            radio_rating = request.form.get('radio_rating', type=int)
+            eat_out_rating = request.form.get('eat_out_rating', type=int)
+            tv_rating = request.form.get('tv_rating', type=int)
 
             conn = get_db_connection()
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO responses (age, gender, preferred_activity, preferred_environment, social_preference, tech_usage)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (age, gender, preferred_activity, preferred_environment, social_preference, tech_usage))
+                INSERT INTO responses (
+                    full_names, email, dob, contact_number,
+                    favorite_food_pizza, favorite_food_pasta, favorite_food_pap_wors,
+                    favorite_food_other, favorite_food_other_text,
+                    movies_rating, radio_rating, eat_out_rating, tv_rating
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                full_names, email, dob, contact_number,
+                food_pizza, food_pasta, food_pap_wors,
+                food_other_checkbox, food_other_text,
+                movies_rating, radio_rating, eat_out_rating, tv_rating
+            ))
             conn.commit()
             conn.close()
             return redirect(url_for('thank_you'))
         except Exception as e:
-            # Log the error e.g., app.logger.error(f"Error submitting survey: {e}")
+            app.logger.error(f"Error submitting survey: {e}") # Log the error
             print(f"Error: {e}") # For debugging
-            # Optionally, redirect to an error page or show a message
-            return "An error occurred while submitting your response. Please try again.", 500
+            # Consider a more user-friendly error page
+            return "An error occurred while submitting your response. Please ensure all required fields are filled correctly.", 500
 
-    return redirect(url_for('survey_form')) # If not POST, redirect back
+    return redirect(url_for('survey_form'))
 
 @app.route('/thankyou')
 def thank_you():
+    # You might want a different thank you page design too
     return render_template('thank_you.html')
 
-@app.route('/analysis')
-def analysis():
+@app.route('/results') # Changed from /analysis to /results to match nav link
+def view_survey_results():
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # 1. Total responses
     cursor.execute("SELECT COUNT(*) as total_responses FROM responses")
-    total_responses = cursor.fetchone()['total_responses']
+    total_responses_row = cursor.fetchone()
+    total_responses = total_responses_row['total_responses'] if total_responses_row else 0
 
-    # 2. Average age
-    cursor.execute("SELECT AVG(age) as avg_age FROM responses WHERE age IS NOT NULL")
-    avg_age_row = cursor.fetchone()
-    avg_age = round(avg_age_row['avg_age'], 1) if avg_age_row and avg_age_row['avg_age'] is not None else "N/A"
-
-
-    # 3. Gender distribution
-    cursor.execute("SELECT gender, COUNT(*) as count FROM responses GROUP BY gender ORDER BY count DESC")
-    gender_distribution = cursor.fetchall()
-
-    # 4. Most popular activity
+    # 2. Favorite Food Counts
+    # Using SUM() because we store 1 for checked, 0 for not.
     cursor.execute("""
-        SELECT preferred_activity, COUNT(*) as count
+        SELECT
+            SUM(favorite_food_pizza) as pizza_count,
+            SUM(favorite_food_pasta) as pasta_count,
+            SUM(favorite_food_pap_wors) as pap_wors_count,
+            SUM(favorite_food_other) as other_count,
+            GROUP_CONCAT(CASE WHEN favorite_food_other_text IS NOT NULL AND favorite_food_other_text != '' THEN favorite_food_other_text ELSE NULL END) as other_texts
         FROM responses
-        GROUP BY preferred_activity
-        ORDER BY count DESC
-        LIMIT 5
     """)
-    popular_activities = cursor.fetchall()
+    food_counts = cursor.fetchone()
 
-    # 5. Preferred environment distribution
+    # 3. Average Likert Scale Ratings (1=Strongly Agree ... 5=Strongly Disagree)
+    # Lower average means more agreement
     cursor.execute("""
-        SELECT preferred_environment, COUNT(*) as count
+        SELECT
+            AVG(movies_rating) as avg_movies,
+            AVG(radio_rating) as avg_radio,
+            AVG(eat_out_rating) as avg_eat_out,
+            AVG(tv_rating) as avg_tv
         FROM responses
-        GROUP BY preferred_environment
-        ORDER BY count DESC
     """)
-    environment_distribution = cursor.fetchall()
-
-    # 6. Social preference distribution
-    cursor.execute("""
-        SELECT social_preference, COUNT(*) as count
-        FROM responses
-        GROUP BY social_preference
-        ORDER BY count DESC
-    """)
-    social_preference_distribution = cursor.fetchall()
+    avg_ratings = cursor.fetchone()
     
-    # 7. Tech usage distribution
-    cursor.execute("""
-        SELECT tech_usage, COUNT(*) as count
-        FROM responses
-        GROUP BY tech_usage
-        ORDER BY count DESC
-    """)
-    tech_usage_distribution = cursor.fetchall()
+    # 4. Count number of people who filled out the survey (based on non-null names or email)
+    cursor.execute("SELECT COUNT(DISTINCT email) as unique_respondents FROM responses WHERE email IS NOT NULL AND email != ''")
+    unique_respondents_row = cursor.fetchone()
+    unique_respondents = unique_respondents_row['unique_respondents'] if unique_respondents_row else 0
+
+
+    # 5. Calculate age from DOB (More complex, SQLite specific date functions)
+    # For simplicity, we'll just count how many DOBs are entered
+    # A more robust solution would parse DOBs and calculate actual ages
+    cursor.execute("SELECT COUNT(dob) as dob_entries FROM responses WHERE dob IS NOT NULL AND dob != ''")
+    dob_entries_row = cursor.fetchone()
+    dob_entries = dob_entries_row['dob_entries'] if dob_entries_row else 0
+    
+    
+    cursor.execute("SELECT COUNT(*) as adults_approx FROM responses WHERE SUBSTR(dob, 1, 4) < '2006'") # Example
+    adults_approx_row = cursor.fetchone()
+    adults_approx = adults_approx_row['adults_approx'] if adults_approx_row else 0
 
 
     conn.close()
 
     return render_template('analysis.html',
                            total_responses=total_responses,
-                           avg_age=avg_age,
-                           gender_distribution=gender_distribution,
-                           popular_activities=popular_activities,
-                           environment_distribution=environment_distribution,
-                           social_preference_distribution=social_preference_distribution,
-                           tech_usage_distribution=tech_usage_distribution
+                           unique_respondents=unique_respondents,
+                           dob_entries=dob_entries,
+                           adults_approx=adults_approx,
+                           food_counts=food_counts,
+                           avg_ratings=avg_ratings
                            )
 
 if __name__ == '__main__':
-    # For development, debug=True is fine. For a public kiosk, use a production WSGI server.
     app.run(debug=True, host='0.0.0.0', port=5000)
