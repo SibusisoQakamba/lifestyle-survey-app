@@ -1,128 +1,163 @@
+/* General Body and Font */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #fff;
     color: #333;
+    font-size: 14px;
 }
 
 .survey-container {
-    max-width: 800px;
+    max-width: 850px;
     margin: 20px auto;
     background-color: #fff;
-    padding: 20px 30px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 25px 40px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-/* Header common to all pages */
+/* Header Styling */
 .survey-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #e7e7e7;
     padding-bottom: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 .logo {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.3em;
+    color: #444;
 }
 
 .survey-nav a {
-    margin-left: 20px;
+    margin-left: 25px;
     text-decoration: none;
-    color: #6c757d; /* Default/inactive link color */
-    font-size: 0.9em;
-    padding: 5px 0; /* Add some padding for better click area */
+    color: #555;
+    font-size: 0.95em;
+    padding: 5px 0;
 }
 .survey-nav a:hover {
     text-decoration: underline;
+    color: #007bff;
 }
 .survey-nav a.active {
     font-weight: bold;
-    color: #007bff; /* Active link color (blue) */
+    color: #007bff;
 }
 .survey-nav a.active:hover {
     text-decoration: none;
 }
 
-
-/* Survey Form Specific Styles (survey.html) */
-.survey-form fieldset {
-    border: none;
-    padding: 0;
-    margin-bottom: 25px;
+/* Form Section Styling */
+.form-section {
+    margin-bottom: 30px; /* Adjusted general section spacing */
 }
 
-.survey-form legend {
-    font-weight: bold;
-    margin-bottom: 15px;
-    font-size: 1.1em;
-    padding-left: 0;
-    width: 100%;
-}
-
-.personal-details .form-row {
-    display: flex;
-    align-items: center;
+/* For general block-level section headings */
+.section-heading-label {
+    font-size: 1em;
+    color: #333;
     margin-bottom: 10px;
+    display: block;
 }
 
-.personal-details .form-group {
-    display: flex;
-    align-items: center;
-    width: 100%;
+/* Personal Details Section Specific Styling */
+.personal-details-section .section-heading-main {
+    font-size: 1em;
+    color: #333;
+    margin-bottom: -20px; /* Space between "Personal Details :" and the indented inputs */
+    display: block;
 }
 
-.personal-details .form-group label {
-    width: 150px;
-    min-width: 120px;
-    padding-right: 10px;
+.personal-details-content {
+    padding-left: 250px; /* Indent the input fields to the right */
+}
+
+.personal-details-content .form-row {
+    margin-bottom: 18px;
+}
+
+.personal-details-content .form-row label {
+    display: block;
+    margin-bottom: 6px;
     font-size: 0.9em;
-    color: #555;
+    color: #333;
+    font-weight: normal;
 }
 
-.personal-details .form-group input[type="text"],
-.personal-details .form-group input[type="email"],
-.personal-details .form-group input[type="date"],
-.personal-details .form-group input[type="tel"] {
-    flex-grow: 1;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.personal-details-content .form-row input[type="text"],
+.personal-details-content .form-row input[type="email"],
+.personal-details-content .form-row input[type="date"],
+.personal-details-content .form-row input[type="tel"] {
+    width: 100%;
+    max-width: 350px; /* Adjusted max-width for indented area */
+    padding: 9px 12px;
+    border: 1px solid #b0c4de;
+    border-radius: 3px;
     box-sizing: border-box;
+    font-size: 0.95em;
 }
 
-.favorite-food .checkbox-group {
+/* Blue ligning (focus state) for text inputs */
+.personal-details-content .form-row input:focus,
+.food-other-text-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+
+/* Favorite Food Section Specific Styling */
+.favorite-food-section {
+    display: flex; /* Key for aligning heading and options horizontally */
+    align-items: center; /* Vertically align items if they have different heights */
+    flex-wrap: wrap; /* Allow options to wrap if not enough space */
+}
+
+.section-heading-inline { /* For "What is your favorite food?" */
+    font-size: 1em;
+    color: #333;
+    margin-right: 15px; /* Space between heading and first checkbox */
+    margin-bottom: 10px; /* In case it wraps, gives some bottom margin */
+    white-space: nowrap; /* Prevent the heading itself from wrapping */
+}
+
+.favorite-food-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 5px;
+    gap: 15px 20px; /* row-gap column-gap */
+    /* padding-top: 5px; -- removed as alignment handled by flex parent */
+    align-items: center; /* Align checkbox items vertically */
 }
 
-.favorite-food .checkbox-group span {
+.favorite-food-options span {
     display: flex;
     align-items: center;
 }
-.favorite-food .checkbox-group input[type="checkbox"] {
-    margin-right: 5px;
+.favorite-food-options input[type="checkbox"] {
+    margin-right: 6px;
+    vertical-align: middle;
 }
-.favorite-food .checkbox-group label {
-    font-size: 0.9em;
+.favorite-food-options label {
+    font-size: 0.95em;
+    color: #333;
+    vertical-align: middle;
 }
-.favorite-food .checkbox-group input[type="text"] {
-    padding: 6px;
-    border: 1px solid #ccc;
+.food-other-text-input {
+    padding: 6px 8px;
+    border: 1px solid #b0c4de;
     border-radius: 3px;
     font-size: 0.9em;
-    margin-left: 5px;
-    display: inline-block;
-    width: auto;
+    margin-left: 8px;
+    width: 150px;
 }
 
-.agreement-scale legend {
+/* Agreement Scale (Likert Table) */
+.agreement-instruction {
     font-size: 0.9em;
     color: #555;
     margin-bottom: 10px;
@@ -132,107 +167,81 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 5px;
+    border: 1px solid #dcdcdc;
 }
 
 .likert-table th,
 .likert-table td {
-    border: 1px solid #ddd;
-    padding: 8px 10px;
+    border: 1px solid #dcdcdc;
+    padding: 10px;
     text-align: center;
     font-size: 0.9em;
 }
 
 .likert-table th {
-    background-color: #f7f7f7;
-    font-weight: normal; /* As per image for headers */
+    background-color: #f0f0f0;
+    font-weight: normal;
+    color: #333;
 }
 
 .likert-table td:first-child {
     text-align: left;
-    width: 30%;
+    width: 35%;
+    color: #333;
 }
 
 .likert-table input[type="radio"] {
     margin: 0;
     vertical-align: middle;
+    cursor: pointer;
 }
 
+/* Blue ligning (focus state) for radio buttons and checkboxes */
+input[type="radio"]:focus,
+input[type="checkbox"]:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 1px;
+}
+input[type="radio"]:focus-visible,
+input[type="checkbox"]:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 1px;
+}
+
+
+/* Submit Button */
 .submit-button-container {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .submit-btn {
     background-color: #007bff;
     color: white;
-    padding: 10px 25px;
+    padding: 10px 30px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1em;
     font-weight: bold;
+    letter-spacing: 0.5px;
 }
 .submit-btn:hover {
     background-color: #0056b3;
 }
 
-/* Results Page Specific Styles (analysis.html) */
-.results-content {
-    padding-top: 20px;
-}
 
-.results-title {
-    text-align: center;
-    font-size: 1.5em;
-    margin-bottom: 30px;
-    font-weight: normal; /* As per image */
-}
-
-.results-grid {
-    display: grid;
-    grid-template-columns: auto 1fr; /* Label | Value */
-    gap: 10px 20px;
-    max-width: 650px; /* Adjust to content */
-    margin: 0 auto;
-    font-size: 0.9em;
-}
-
-.result-label {
-    text-align: left; /* Changed from right to match image more closely */
-    padding-right: 10px;
-    color: #333; /* Standard text color for labels */
-}
-
-.result-value {
-    text-align: left; /* Changed from right */
-    font-weight: bold; /* As per #placeholders in image */
-    color: #333;
-}
-
-.no-surveys-message {
-    text-align: center;
-    font-size: 1.2em;
-    color: #777;
-    margin-top: 50px;
-    padding: 20px;
-}
+/* Styles for Results Page (analysis.html) - for consistency */
+.results-content { padding-top: 20px; }
+.results-title { text-align: center; font-size: 1.5em; margin-bottom: 30px; font-weight: normal; }
+.results-grid { display: grid; grid-template-columns: auto 1fr; gap: 10px 20px; max-width: 650px; margin: 0 auto; font-size: 0.9em; }
+.result-label { text-align: left; padding-right: 10px; color: #333; }
+.result-value { text-align: left; font-weight: bold; color: #333; }
+.no-surveys-message { text-align: center; font-size: 1.2em; color: #777; margin-top: 50px; padding: 20px; }
 
 /* Thank You Page Specific Styles (thank_you.html) */
-.thank-you-content {
-    text-align: center;
-    padding: 50px 20px;
-}
-.thank-you-content h1 {
-    margin-bottom: 20px;
-}
-.thank-you-content p {
-    margin-bottom: 15px;
-    font-size: 1.1em;
-}
-.thank-you-content a {
-    color: #007bff;
-    text-decoration: none;
-}
-.thank-you-content a:hover {
-    text-decoration: underline;
-}
+.thank-you-content { text-align: center; padding: 50px 20px; }
+.thank-you-content h1 { margin-bottom: 20px; }
+.thank-you-content p { margin-bottom: 15px; font-size: 1.1em; }
+.thank-you-content a { color: #007bff; text-decoration: none; }
+.thank-you-content a:hover { text-decoration: underline; }
