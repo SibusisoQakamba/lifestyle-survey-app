@@ -7,7 +7,7 @@ CREATE TABLE responses (
     -- Personal Details
     full_names TEXT,
     email TEXT,
-    dob TEXT, -- Storing as TEXT, can be DATE if DB supports well
+    dob TEXT, -- Storing as TEXT, YYYY-MM-DD format expected
     contact_number TEXT,
 
     -- Favorite Food
