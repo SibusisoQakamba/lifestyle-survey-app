@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Survey Analysis</h1>
+        <p><a href="{{ url_for('survey_form') }}">Back to Survey</a></p>
+
+        <h2>Overview</h2>
+        <p><strong>Total Responses:</strong> {{ total_responses }}</p>
+        <p><strong>Average Age of Respondents:</strong> {{ avg_age if avg_age != "N/A" else "Not enough data" }}</p>
+
+        <h2>Gender Distribution</h2>
+        {% if gender_distribution %}
+        <ul>
+            {% for item in gender_distribution %}
+            <li>{{ item.gender }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No data available for gender distribution.</p>
+        {% endif %}
+
+        <h2>Most Popular Activities (Top 5)</h2>
+        {% if popular_activities %}
+        <ul>
+            {% for activity in popular_activities %}
+            <li>{{ activity.preferred_activity }}: {{ activity.count }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No data available for popular activities.</p>
+        {% endif %}
+
+        <h2>Preferred Environment Distribution</h2>
+        {% if environment_distribution %}
+        <ul>
+            {% for item in environment_distribution %}
+            <li>{{ item.preferred_environment }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No data available for environment preferences.</p>
+        {% endif %}
+        
+        <h2>Social Preference Distribution</h2>
+        {% if social_preference_distribution %}
+        <ul>
+            {% for item in social_preference_distribution %}
+            <li>{{ item.social_preference }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No data available for social preferences.</p>
+        {% endif %}
+
+        <h2>Technology Usage Distribution</h2>
+        {% if tech_usage_distribution %}
+        <ul>
+            {% for item in tech_usage_distribution %}
+            <li>{{ item.tech_usage }}: {{ item.count }} ({{ "%.1f"|format((item.count / total_responses) * 100) }}%)</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No data available for technology usage.</p>
+        {% endif %}
+
+    </div>
+</body>
+</html>

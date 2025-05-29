@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lifestyle Preferences Survey</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Lifestyle Preferences Survey</h1>
+        <p>Help us understand lifestyle choices by filling out this short survey. Your responses are anonymous.</p>
+        <form action="{{ url_for('submit_survey') }}" method="POST">
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" min="10" max="120">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Other">Other</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="preferred_activity">What's your preferred leisure activity?</label>
+                <select id="preferred_activity" name="preferred_activity" required>
+                    <option value="" disabled selected>Select an activity</option>
+                    <option value="Reading">Reading</option>
+                    <option value="Sports">Sports (Playing/Watching)</option>
+                    <option value="Movies/TV Shows">Movies/TV Shows</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Socializing">Socializing with Friends/Family</option>
+                    <option value="Arts & Crafts">Arts & Crafts</option>
+                    <option value="Outdoor Activities">Outdoor Activities (Hiking, Biking)</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>What kind of environment do you prefer to live in?</label>
+                <div><input type="radio" id="urban" name="preferred_environment" value="Urban" required> <label for="urban">Urban (City)</label></div>
+                <div><input type="radio" id="suburban" name="preferred_environment" value="Suburban"> <label for="suburban">Suburban</label></div>
+                <div><input type="radio" id="rural" name="preferred_environment" value="Rural"> <label for="rural">Rural (Countryside)</label></div>
+            </div>
+
+            <div class="form-group">
+                <label>How would you describe your social preference?</label>
+                <div><input type="radio" id="introvert" name="social_preference" value="Introvert" required> <label for="introvert">Introvert</label></div>
+                <div><input type="radio" id="extrovert" name="social_preference" value="Extrovert"> <label for="extrovert">Extrovert</label></div>
+                <div><input type="radio" id="ambivert" name="social_preference" value="Ambivert"> <label for="ambivert">Ambivert</label></div>
+            </div>
+            
+            <div class="form-group">
+                <label>How would you rate your daily technology usage (screens, gadgets)?</label>
+                <div><input type="radio" id="low_tech" name="tech_usage" value="Low" required> <label for="low_tech">Low (Minimal)</label></div>
+                <div><input type="radio" id="medium_tech" name="tech_usage" value="Medium"> <label for="medium_tech">Medium (Moderate)</label></div>
+                <div><input type="radio" id="high_tech" name="tech_usage" value="High"> <label for="high_tech">High (Extensive)</label></div>
+            </div>
+
+            <button type="submit">Submit Response</button>
+        </form>
+    </div>
+</body>
+</html>
