@@ -53,7 +53,7 @@
                     <span><input type="checkbox" id="food_pap_wors" name="food_pap_wors" value="1"> <label for="food_pap_wors">Pap and Wors</label></span>
                     <span>
                         <input type="checkbox" id="food_other_checkbox" name="food_other_checkbox" value="1"> <label for="food_other_checkbox">Other</label>
-                        <input type="text" id="food_other_text" name="food_other_text" placeholder="Specify other food" style="margin-left: 5px; display: inline-block; width: auto;">
+                        <input type="text" id="food_other_text" name="food_other_text" placeholder="Specify other food">
                     </span>
                 </div>
             </fieldset>
@@ -63,12 +63,12 @@
                 <table class="likert-table">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>Strongly Agree (1)</th>
-                            <th>Agree (2)</th>
-                            <th>Neutral (3)</th>
-                            <th>Disagree (4)</th>
-                            <th>Strongly Disagree (5)</th>
+                            <th></th> <!-- Empty header for question column -->
+                            <th>Strongly Agree</th>
+                            <th>Agree</th>
+                            <th>Neutral</th>
+                            <th>Disagree</th>
+                            <th>Strongly Disagree</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,7 +117,7 @@
         // Optional: Enable/disable 'Other' text input based on checkbox
         const otherCheckbox = document.getElementById('food_other_checkbox');
         const otherTextInput = document.getElementById('food_other_text');
-        otherTextInput.disabled = true; // Initially disabled
+        otherTextInput.disabled = !otherCheckbox.checked; // Initially disable if not checked
 
         otherCheckbox.addEventListener('change', function() {
             otherTextInput.disabled = !this.checked;
