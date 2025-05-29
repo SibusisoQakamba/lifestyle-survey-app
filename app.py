@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
-from datetime import datetime
+from datetime import datetime, date
 
 app = Flask(__name__)
 DATABASE = 'survey_data.db'
@@ -9,6 +9,20 @@ def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row # Access columns by name
     return conn
+
+def calculate_age(born_date_str):
+    if not born_date_str:
+        return None
+    try:
+        # Ensure the date string is in YYYY-MM-DD format for fromisoformat
+        # HTML input type="date" should provide this format
+        born = date.fromisoformat(born_date_str)
+        today = date.today()
+        return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    except ValueError:
+        # Handle cases where date string might not be valid
+        app.logger.warning(f"Invalid date format for DOB: {born_date_str}")
+        return None
 
 @app.route('/')
 def survey_form():
@@ -21,7 +35,7 @@ def submit_survey():
             # Personal Details
             full_names = request.form.get('full_names')
             email = request.form.get('email')
-            dob = request.form.get('dob')
+            dob = request.form.get('dob') # Expected YYYY-MM-DD
             contact_number = request.form.get('contact_number')
 
             # Favorite Food
@@ -57,81 +71,77 @@ def submit_survey():
             conn.close()
             return redirect(url_for('thank_you'))
         except Exception as e:
-            app.logger.error(f"Error submitting survey: {e}") # Log the error
+            app.logger.error(f"Error submitting survey: {e}")
             print(f"Error: {e}") # For debugging
-            # Consider a more user-friendly error page
             return "An error occurred while submitting your response. Please ensure all required fields are filled correctly.", 500
 
     return redirect(url_for('survey_form'))
 
 @app.route('/thankyou')
 def thank_you():
-    # You might want a different thank you page design too
     return render_template('thank_you.html')
 
-@app.route('/results') # Changed from /analysis to /results to match nav link
+@app.route('/results')
 def view_survey_results():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 1. Total responses
     cursor.execute("SELECT COUNT(*) as total_responses FROM responses")
     total_responses_row = cursor.fetchone()
     total_responses = total_responses_row['total_responses'] if total_responses_row else 0
 
-    # 2. Favorite Food Counts
-    # Using SUM() because we store 1 for checked, 0 for not.
-    cursor.execute("""
-        SELECT
-            SUM(favorite_food_pizza) as pizza_count,
-            SUM(favorite_food_pasta) as pasta_count,
-            SUM(favorite_food_pap_wors) as pap_wors_count,
-            SUM(favorite_food_other) as other_count,
-            GROUP_CONCAT(CASE WHEN favorite_food_other_text IS NOT NULL AND favorite_food_other_text != '' THEN favorite_food_other_text ELSE NULL END) as other_texts
-        FROM responses
-    """)
-    food_counts = cursor.fetchone()
+    avg_age_val = "N/A"
+    max_age_val = "N/A"
+    min_age_val = "N/A"
+    food_counts_val = None
+    avg_ratings_val = None
 
-    # 3. Average Likert Scale Ratings (1=Strongly Agree ... 5=Strongly Disagree)
-    # Lower average means more agreement
-    cursor.execute("""
-        SELECT
-            AVG(movies_rating) as avg_movies,
-            AVG(radio_rating) as avg_radio,
-            AVG(eat_out_rating) as avg_eat_out,
-            AVG(tv_rating) as avg_tv
-        FROM responses
-    """)
-    avg_ratings = cursor.fetchone()
-    
-    # 4. Count number of people who filled out the survey (based on non-null names or email)
-    cursor.execute("SELECT COUNT(DISTINCT email) as unique_respondents FROM responses WHERE email IS NOT NULL AND email != ''")
-    unique_respondents_row = cursor.fetchone()
-    unique_respondents = unique_respondents_row['unique_respondents'] if unique_respondents_row else 0
+    if total_responses > 0:
+        cursor.execute("SELECT dob FROM responses WHERE dob IS NOT NULL AND dob != ''")
+        dobs = cursor.fetchall()
+        ages = []
+        for row in dobs:
+            age = calculate_age(row['dob'])
+            if age is not None:
+                ages.append(age)
 
+        if ages:
+            avg_age_val = round(sum(ages) / len(ages), 1)
+            max_age_val = max(ages)
+            min_age_val = min(ages)
+        else: # No valid DOBs to calculate age from
+            avg_age_val = "N/A (No valid DOBs)"
+            max_age_val = "N/A (No valid DOBs)"
+            min_age_val = "N/A (No valid DOBs)"
 
-    # 5. Calculate age from DOB (More complex, SQLite specific date functions)
-    # For simplicity, we'll just count how many DOBs are entered
-    # A more robust solution would parse DOBs and calculate actual ages
-    cursor.execute("SELECT COUNT(dob) as dob_entries FROM responses WHERE dob IS NOT NULL AND dob != ''")
-    dob_entries_row = cursor.fetchone()
-    dob_entries = dob_entries_row['dob_entries'] if dob_entries_row else 0
-    
-    
-    cursor.execute("SELECT COUNT(*) as adults_approx FROM responses WHERE SUBSTR(dob, 1, 4) < '2006'") # Example
-    adults_approx_row = cursor.fetchone()
-    adults_approx = adults_approx_row['adults_approx'] if adults_approx_row else 0
+        cursor.execute("""
+            SELECT
+                SUM(favorite_food_pizza) as pizza_count,
+                SUM(favorite_food_pasta) as pasta_count,
+                SUM(favorite_food_pap_wors) as pap_wors_count
+            FROM responses
+        """)
+        food_counts_val = cursor.fetchone()
 
+        cursor.execute("""
+            SELECT
+                AVG(movies_rating) as avg_movies,
+                AVG(radio_rating) as avg_radio,
+                AVG(eat_out_rating) as avg_eat_out,
+                AVG(tv_rating) as avg_tv
+            FROM responses
+        """)
+        avg_ratings_val = cursor.fetchone()
 
     conn.close()
 
     return render_template('analysis.html',
                            total_responses=total_responses,
-                           unique_respondents=unique_respondents,
-                           dob_entries=dob_entries,
-                           adults_approx=adults_approx,
-                           food_counts=food_counts,
-                           avg_ratings=avg_ratings
+                           avg_age=avg_age_val,
+                           max_age=max_age_val,
+                           min_age=min_age_val,
+                           food_counts=food_counts_val,
+                           avg_ratings=avg_ratings_val
                            )
 
 if __name__ == '__main__':
