@@ -15,6 +15,7 @@ body {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+/* Header common to all pages */
 .survey-header {
     display: flex;
     justify-content: space-between;
@@ -32,17 +33,25 @@ body {
 .survey-nav a {
     margin-left: 20px;
     text-decoration: none;
-    color: #007bff;
+    color: #6c757d; /* Default/inactive link color */
     font-size: 0.9em;
+    padding: 5px 0; /* Add some padding for better click area */
 }
-
+.survey-nav a:hover {
+    text-decoration: underline;
+}
 .survey-nav a.active {
     font-weight: bold;
-    /* color: #0056b3; */ /* Could be a different color for active */
+    color: #007bff; /* Active link color (blue) */
+}
+.survey-nav a.active:hover {
+    text-decoration: none;
 }
 
+
+/* Survey Form Specific Styles (survey.html) */
 .survey-form fieldset {
-    border: none; /* Or 1px solid #ddd; if you prefer lines */
+    border: none;
     padding: 0;
     margin-bottom: 25px;
 }
@@ -51,7 +60,7 @@ body {
     font-weight: bold;
     margin-bottom: 15px;
     font-size: 1.1em;
-    padding-left: 0; /* Align with inputs if no border */
+    padding-left: 0;
     width: 100%;
 }
 
@@ -63,13 +72,13 @@ body {
 
 .personal-details .form-group {
     display: flex;
-    align-items: center; /* Vertically align label and input */
+    align-items: center;
     width: 100%;
 }
 
 .personal-details .form-group label {
-    width: 150px; /* Adjust as needed */
-    min-width: 120px; /* Ensure label space */
+    width: 150px;
+    min-width: 120px;
     padding-right: 10px;
     font-size: 0.9em;
     color: #555;
@@ -89,7 +98,7 @@ body {
 .favorite-food .checkbox-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px; /* Space between items */
+    gap: 15px;
     margin-top: 5px;
 }
 
@@ -108,8 +117,10 @@ body {
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 0.9em;
+    margin-left: 5px;
+    display: inline-block;
+    width: auto;
 }
-
 
 .agreement-scale legend {
     font-size: 0.9em;
@@ -133,16 +144,16 @@ body {
 
 .likert-table th {
     background-color: #f7f7f7;
-    font-weight: normal;
+    font-weight: normal; /* As per image for headers */
 }
 
 .likert-table td:first-child {
     text-align: left;
-    width: 30%; /* Adjust as needed for question text */
+    width: 30%;
 }
 
 .likert-table input[type="radio"] {
-    margin: 0; /* Center radio button in cell */
+    margin: 0;
     vertical-align: middle;
 }
 
@@ -161,41 +172,67 @@ body {
     font-size: 1em;
     font-weight: bold;
 }
-
 .submit-btn:hover {
     background-color: #0056b3;
 }
 
-/* Analysis Page Styles (can reuse some or add specific ones) */
-.analysis-container {
-    max-width: 800px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+/* Results Page Specific Styles (analysis.html) */
+.results-content {
+    padding-top: 20px;
 }
 
-.analysis-container h1, .analysis-container h2 {
-    color: #333;
-    margin-bottom: 15px;
-}
-.analysis-container h1 { text-align: center; }
-.analysis-container p, .analysis-container li {
-    margin-bottom: 8px;
-}
-.analysis-container ul {
-    list-style-type: none;
-    padding: 0;
-}
-.analysis-container ul li {
-    background: #e9e9e9;
-    margin-bottom: 5px;
-    padding: 8px;
-    border-radius: 3px;
-}
-.analysis-container .nav-link {
-    display: block;
-    margin-bottom: 20px;
+.results-title {
     text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    font-weight: normal; /* As per image */
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: auto 1fr; /* Label | Value */
+    gap: 10px 20px;
+    max-width: 650px; /* Adjust to content */
+    margin: 0 auto;
+    font-size: 0.9em;
+}
+
+.result-label {
+    text-align: left; /* Changed from right to match image more closely */
+    padding-right: 10px;
+    color: #333; /* Standard text color for labels */
+}
+
+.result-value {
+    text-align: left; /* Changed from right */
+    font-weight: bold; /* As per #placeholders in image */
+    color: #333;
+}
+
+.no-surveys-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #777;
+    margin-top: 50px;
+    padding: 20px;
+}
+
+/* Thank You Page Specific Styles (thank_you.html) */
+.thank-you-content {
+    text-align: center;
+    padding: 50px 20px;
+}
+.thank-you-content h1 {
+    margin-bottom: 20px;
+}
+.thank-you-content p {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+.thank-you-content a {
+    color: #007bff;
+    text-decoration: none;
+}
+.thank-you-content a:hover {
+    text-decoration: underline;
 }
